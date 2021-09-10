@@ -4,6 +4,32 @@ function getHeader(col) {
   return key;
 }
 
+function trace() {
+  var userProperties=PropertiesService.getUserProperties();
+  var data = userProperties.getProperties();
+  for (var key in data) {
+    Logger.log('UserKey: %s, Value: %s', key, data[key]);
+  }
+}
+
+function secret() {
+  var userProperties=PropertiesService.getUserProperties();
+  userProperties.deleteAllProperties();
+  userProperties.setProperty("submit_server", "https://test.encodedcc.org");
+  userProperties.setProperty("https://www.encodeproject.org", "7UTSX6ET:xxxxx");
+  userProperties.setProperty("https://test.encodedcc.org", "7UTSX6ET:xxxxx");
+
+  var data = userProperties.getProperties();
+  for (var key in data) {
+    Logger.log('UserKey: %s, Value: %s', key, data[key]);
+  }
+}
+
+
+/*  
+   date_entered_in_spreadsheet	date_posted_to_DCC	aliases:array	award	lab	dataset_type	description	assay_term_id	assay_term_name	biosample_term_name	biosample_term_id	biosample_type	target	possible_controls:array	documents:array	notes	status															
+   10/28/14 (DG)		bing-ren:e15.5_forebrain_Control	/awards/U54HG006997/	/labs/bing-ren/	experiment	Control ChIP-seq on embryonic 15.5 day mouse forebrain	ChIP-seq	OBI:0000716	forebrain	UBERON:0001890	tissue	/targets/Control-mouse/	bing-ren:e15.5_forebrain_Control	bing-ren:ChIP_Library_Preparation_v060614;bing-ren:Tissue_Fixation_and_Sonication_v060614																	
+*/
 function run(action, curRow, verbose) {
   var sheet = SpreadsheetApp.getActiveSheet();
   var userProperties = PropertiesService.getUserProperties();
@@ -20,14 +46,15 @@ function run(action, curRow, verbose) {
   var data = {};
   var lastCol = sheet.getLastColumn();
   var headers = {};
-  for (var i=1; i<lastCol; i++) {
+  // Logger.log("LastCol"+lastCol);
+  for (var i=1; i<=lastCol; i++) {
     headers[i] = getHeader(i);
   }
-  for (var i=1; i<lastCol; i++) {
+  for (var i=1; i<=lastCol; i++) {
     var header = headers[i];
-    var val = sheet.getRange(curRow, i).getValue();
-    if (!header || !val)
+    if (!header || sheet.getRange(curRow, i).isBlank())
       continue;
+    var val = sheet.getRange(curRow, i).getValue();
 
     if (val=="N/A")
       val="";
@@ -40,7 +67,10 @@ function run(action, curRow, verbose) {
   var json = JSON.stringify(res, null, 4);
   Logger.log(json);
   
-  var url = "http://132.239.201.216/encode/";
+  var url = "http://renlab-info.ucsd.edu/encode/";
+  url="http://enhancer.sdsc.edu/bli/encode/";
+  url="http://renlab.sdsc.edu/bil022/encode/";
+  
   var options = { "method":"POST",
     "contentType" : "application/json",
     "headers" : { "Accept":"application/json" },
@@ -141,7 +171,7 @@ function doValidate(from, to) {
   var headers = {};
 
   var ui = SpreadsheetApp.getUi();
-  for (var i=1; i<lastCol; i++) {
+  for (var i=1; i<=lastCol; i++) {
     headers[i] = getHeader(i);
     Logger.log("::"+headers[i]+"\n");
     if (hasSpace(headers[i])) {
@@ -150,11 +180,19 @@ function doValidate(from, to) {
     }
   }
   for (var row=from; row<=to; row++) {
-    for (var i=1; i<lastCol; i++) {
+    // shortcut
+    if (sheet.getRange(row, 2).getValue()) {
+      Logger.log("Skip "+row);
+      continue;
+    }
+      
+    for (var i=1; i<=lastCol; i++) {
       var header = headers[i];
-      var val = sheet.getRange(row, i).getValue();
-      if (!header || !val)
+      if (!header || sheet.getRange(row, i).isBlank()) {
+        Logger.log("##"+header+" skipped for blank\n");
         continue;
+      }
+      var val = sheet.getRange(row, i).getValue();
       Logger.log("::"+header+"=>"+val+"\n");
       
       var trimmed = trim(val);
@@ -235,6 +273,12 @@ function selEncodeServer() {
   Browser.msgBox("Use: "+server_name);
 }
 
+function selRenlabServer() {
+  var server_name = "http://renlab-info.ucsd.edu:6543";
+  PropertiesService.getUserProperties().setProperty("submit_server", server_name);
+  Browser.msgBox("Use: "+server_name);
+}
+
 function getCurrServer() {
   var server_name = PropertiesService.getUserProperties().getProperty("submit_server");
   Browser.msgBox("Current server: "+server_name);
@@ -268,6 +312,7 @@ function onOpen() {
         .addSubMenu(ui.createMenu('Select servers')
           .addItem("Test server", "selTestServer")
           .addItem("Encode server", "selEncodeServer")
+          .addItem("Ren-lab server", "selRenlabServer")
         )
         .addItem("View current server", "getCurrServer")
         .addItem("Validate sheet", "doValidate")
@@ -286,6 +331,7 @@ function onOpen() {
         .addSubMenu(ui.createMenu('Select servers')
           .addItem("Test server", "selTestServer")
           .addItem("Encode server", "selEncodeServer")
+          .addItem("Ren-lab server", "selRenlabServer")
         )
         .addItem("View current server", "getCurrServer")
         .addItem("Validate sheet", "doValidate")
@@ -298,6 +344,10 @@ function onOpen() {
 function help() {
   var app = UiApp.createApplication().setHeight('60').setWidth('150');
   app.setTitle("Help document:");
+  var panel = app.createPopupPanel()
+  var link = app.createAnchor('http://renlab-info.ucsd.edu/encode/help.php', 'http://renlab-info.ucsd.edu/encode/help.php');
+  panel.add(link);
+  app.add(panel);
   var doc = SpreadsheetApp.getActive();
   doc.show(app);
 }
@@ -330,4 +380,3 @@ function trim(str) {
   }
   return ret;
 }
-
