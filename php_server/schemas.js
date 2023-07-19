@@ -1,4 +1,7 @@
 'use strict';
+// TODO
+// Get json from https://raw.githubusercontent.com/ENCODE-DCC/encoded/dev/src/encoded/schemas/library.json
+// Use library instead of Library?
 
 const fs = require('fs');
 const output={};
