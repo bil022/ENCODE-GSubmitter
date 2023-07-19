@@ -27,11 +27,22 @@ for (var json in args) {
   let rawdata = fs.readFileSync(file);
   let schemas = JSON.parse(rawdata);
   let fields = Array();
-  for (var attr in schemas['dependencies']) {
-    fields.push(attr);
-  }
-  for (var attr in schemas['properties']) {
-    fields.push(attr);
+  const attrs=['dependencies', 'required', 'properties'];
+  for (var idx in attrs) {
+    // console.log("attr:" + attrs[idx]);
+    let attr=attrs[idx];
+    let data=schemas[attr];
+    if (Array.isArray(data)) {
+      for (var val in data) {
+        // console.log("\t=>" + data[val]);
+        fields.push(data[val]);
+      }
+    } else {
+      for (var val in data) {
+        // console.log("\t" + val);
+        fields.push(val);
+      }
+    }
   }
 
   output[tabs[id]]={"URI":id, "FIELDS": fields};
