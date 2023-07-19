@@ -60,7 +60,7 @@ $updated_data=json_decode('{}');
 foreach ($input_data as $key => $value) {
   if (strpos($key, ":") != false) {
     list($key, $type)=explode(":", $key);
-    if ($type == "array") { # or boolean
+    if ($type == "array" || $type=="textarray") { # or boolean                       
       if (empty($value)) {
         $value=array();
       } else {
