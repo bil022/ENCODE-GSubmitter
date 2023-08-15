@@ -18,7 +18,20 @@
       "related_files",
       "internal_status",
       "pipeline_error_detail",
-      "control_type"
+      "control_type",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "submitted",
+      "notes",
+      "properties",
+      "references",
+      "documents",
+      "biosample_ontology",
+      "assay",
+      "submitter_comment"
     ]
   },
   "Library": {
@@ -79,7 +92,20 @@
       "linkers",
       "construction_method",
       "inclusion_list",
-      "hic_construction"
+      "hic_construction",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "accessioned_status",
+      "submitted",
+      "source",
+      "product_id",
+      "lot_id",
+      "documents",
+      "notes",
+      "submitter_comment"
     ]
   },
   "Replicate": {
@@ -98,7 +124,12 @@
       "library",
       "rbns_protein_concentration",
       "rbns_protein_concentration_units",
-      "status"
+      "status",
+      "schema_version",
+      "uuid",
+      "aliases",
+      "submitted",
+      "notes"
     ]
   },
   "FunctionalCharacterizationExperiment": {
@@ -128,7 +159,20 @@
       "supersedes",
       "control_type",
       "plasmids_library_type",
-      "examined_loci"
+      "examined_loci",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "submitted",
+      "notes",
+      "properties",
+      "references",
+      "documents",
+      "biosample_ontology",
+      "assay",
+      "submitter_comment"
     ]
   },
   "Biosample": {
@@ -218,7 +262,24 @@
       "disease_term_id",
       "pulse_chase_time",
       "pulse_chase_time_units",
-      "expressed_genes"
+      "expressed_genes",
+      "genetic_modifications",
+      "biosample_ontology",
+      "product_id",
+      "lot_id",
+      "source",
+      "references",
+      "documents",
+      "submitter_comment",
+      "notes",
+      "submitted",
+      "attribution",
+      "accessioned_status",
+      "schema_version",
+      "aliases",
+      "url",
+      "accession",
+      "uuid"
     ]
   },
   "FunctionalCharacterizationSeries": {
@@ -228,7 +289,19 @@
       "award",
       "lab",
       "schema_version",
-      "related_datasets"
+      "related_datasets",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "submitted",
+      "references",
+      "notes",
+      "documents",
+      "properties",
+      "properties",
+      "submitter_comment"
     ]
   },
   "GeneticModification": {
@@ -281,7 +354,16 @@
       "reagents",
       "documents",
       "CRISPR_system",
-      "cas_species"
+      "cas_species",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "accessioned_status",
+      "submitted",
+      "notes",
+      "submitter_comment"
     ]
   },
   "Reference": {
@@ -304,7 +386,18 @@
       "related_pipelines",
       "elements_selection_method",
       "crispr_screen_tiling",
-      "experimental_input"
+      "experimental_input",
+      "schema_version",
+      "uuid",
+      "accession",
+      "aliases",
+      "attribution",
+      "submitted",
+      "references",
+      "notes",
+      "properties",
+      "documents",
+      "properties"
     ]
   }
 }
