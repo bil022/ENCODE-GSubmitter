@@ -1,7 +1,4 @@
 'use strict';
-// TODO
-// Get json from https://raw.githubusercontent.com/ENCODE-DCC/encoded/dev/src/encoded/schemas/library.json
-// Use library instead of Library?
 
 const fs = require('fs');
 const output={};
@@ -27,15 +24,22 @@ for (var json in args) {
   let rawdata = fs.readFileSync(file);
   let schemas = JSON.parse(rawdata);
   let fields = Array();
-  const attrs=['dependencies', 'required', 'properties'];
+  const attrs=['dependencies', 'required', 'properties', 'mixinProperties'];
   for (var idx in attrs) {
     // console.log("attr:" + attrs[idx]);
     let attr=attrs[idx];
     let data=schemas[attr];
     if (Array.isArray(data)) {
       for (var val in data) {
-        // console.log("\t=>" + data[val]);
-        fields.push(data[val]);
+	if (typeof data[val] == "object") {
+          let ref = data[val]["$ref"];
+	  let key = ref.split('/')[1];
+	  // "$ref": "mixins.json#/genetic_modifications"
+          // console.log("\t=>" + key);
+          fields.push(key);
+	} else {
+          fields.push(data[val]);
+        }
       }
     } else {
       for (var val in data) {
